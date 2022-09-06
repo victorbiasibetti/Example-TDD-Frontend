@@ -1,6 +1,6 @@
-import { AuthenticationParams } from "../usecases/authentication";
 import faker from "faker";
-import { AccountModel } from "../models/account-model";
+import { AuthenticationParams } from "../usecases";
+import { AccountModel } from "../models";
 
 export const mockAuthentication = (): AuthenticationParams => ({
   email: faker.internet.email(),
