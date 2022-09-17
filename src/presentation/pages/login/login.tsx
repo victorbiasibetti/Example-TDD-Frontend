@@ -11,6 +11,8 @@ const Login: React.FC = () => {
       <form className={Styles.form}>
         <h2>Login</h2>
         <div className={Styles.inputWrap}>
+          <input type="email" name="email" placeholder="Digite seu e-mail" />
+
           <span className={Styles.status}>🔴</span>
         </div>
         <div className={Styles.inputWrap}>
