@@ -49,7 +49,7 @@ describe("Login Component", () => {
     expect(passwordStatus.textContent).toBe("🔴");
   });
 
-  test("Should call Validation with correct value", () => {
+  test("Should call Validation with correct email", () => {
     const { sut, validationSpy } = makeSut();
     const emailInput = sut.getByTestId("email");
     fireEvent.input(emailInput, { target: { value: "any_email" } });
