@@ -6,7 +6,10 @@ const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login validation={null} />} />
+        <Route
+          path="/login"
+          element={<Login validation={null} authentication={null} />}
+        />
       </Routes>
     </BrowserRouter>
   );
