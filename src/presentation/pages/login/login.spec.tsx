@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { createMemoryHistory } from "history";
 import faker from "faker";
 import "jest-localstorage-mock";
 import {
@@ -22,7 +21,6 @@ type SutParams = {
   validationError: string;
 };
 
-const history = createMemoryHistory();
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub();
   const authenticationSpy = new AuthenticationSpy();
