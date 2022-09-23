@@ -205,6 +205,7 @@ describe("Login Component", () => {
         "accessToken",
         authenticationSpy.account.accessToken
       );
+      expect(mockUseNavigate).toHaveBeenCalledWith("/", { replace: true });
     });
   });
 
