@@ -48,6 +48,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         password: state.password,
       });
       localStorage.setItem("accessToken", account.accessToken);
+      navigate("/", { replace: true });
     } catch (error) {
       setState({
         ...state,
@@ -81,14 +82,13 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
           >
             Entrar
           </button>
-          <Link
+          <span
             data-testid="signup"
-            to="/signup"
             className={Styles.link}
             onClick={() => navigate("/signup")}
           >
             Criar conta
-          </Link>
+          </span>
           <FormStatus />
         </form>
       </Context.Provider>
