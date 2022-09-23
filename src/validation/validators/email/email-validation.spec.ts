@@ -1,10 +1,17 @@
 import { InvaliedFieldError } from "@/validation/errors/invalid-field-error";
 import { EmailValidation } from "./email-validation";
+import faker from "faker";
 
 describe("EmailValidation", () => {
   test("Should return erro if email is invalid", () => {
-    const sut = new EmailValidation("email");
-    const error = sut.validate("");
+    const sut = new EmailValidation(faker.random.word());
+    const error = sut.validate(faker.random.word());
     expect(error).toEqual(new InvaliedFieldError());
+  });
+
+  test("Should return success if email is valid", () => {
+    const sut = new EmailValidation(faker.random.word());
+    const error = sut.validate(faker.internet.email());
+    expect(error).toBeFalsy();
   });
 });
