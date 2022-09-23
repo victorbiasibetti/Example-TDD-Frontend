@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Styles from "./login-styles.scss";
 import {
   LoginHeader,
@@ -25,6 +26,8 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     mainError: "",
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setState({
       ...state,
@@ -46,7 +49,6 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       });
       localStorage.setItem("accessToken", account.accessToken);
     } catch (error) {
-      console.log(error.message);
       setState({
         ...state,
         isLoading: false,
@@ -79,7 +81,14 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
           >
             Entrar
           </button>
-          <span className={Styles.link}>Criar conta</span>
+          <Link
+            data-testid="signup"
+            to="/signup"
+            className={Styles.link}
+            onClick={() => navigate("/signup")}
+          >
+            Criar conta
+          </Link>
           <FormStatus />
         </form>
       </Context.Provider>
