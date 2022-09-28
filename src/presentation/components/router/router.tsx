@@ -1,9 +1,9 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 type Props = {
-  MakeLogin: React.FC;
-};
+  MakeLogin: React.FC
+}
 
 const Router: React.FC<Props> = ({ MakeLogin }: Props) => {
   return (
@@ -12,6 +12,6 @@ const Router: React.FC<Props> = ({ MakeLogin }: Props) => {
         <Route path="/login" element={<MakeLogin />} />
       </Routes>
     </BrowserRouter>
-  );
-};
-export default Router;
+  )
+}
+export default Router

@@ -7,7 +7,10 @@
   "extends": [
     "standard-with-typescript",
     "plugin:react/recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "env": {
     "cypress/globals": true
@@ -23,6 +26,7 @@
     "@typescript-eslint/comma-spacing": "off",
     "@typescript-eslint/return-await": "off",
     "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "no-redeclare": "off",
     "import/export": "off",
     "react/jsx-uses-react": "error",
