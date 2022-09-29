@@ -53,4 +53,13 @@ describe('RemoteAddAccount', () => {
     const promise = sut.add(mockAddAccountParams())
     expect(promise).rejects.toThrow(new UnexpectedError())
   })
+
+  test('Should throw Unexpected Error with HttpPostClient return 500', () => {
+    const { httpPostClientSpy, sut } = makeSut()
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.serverError
+    }
+    const promise = sut.add(mockAddAccountParams())
+    expect(promise).rejects.toThrow(new UnexpectedError())
+  })
 })
