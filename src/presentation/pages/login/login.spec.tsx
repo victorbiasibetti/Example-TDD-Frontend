@@ -24,8 +24,8 @@ type SutParams = {
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
-  const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
+  const authenticationSpy = new AuthenticationSpy()
   const saveAccessTokenMock = new SaveAccessTokenMock()
   const sut = render(
     <BrowserRouter>
