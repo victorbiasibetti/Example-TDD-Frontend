@@ -44,7 +44,7 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
       <Context.Provider value={{ state, setState }}>
         <form
           className={Styles.form} >
-          <h2>Login</h2>
+          <h2>Cadastro</h2>
           <Input type="text" name="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
 
@@ -62,9 +62,12 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
             className={Styles.submit}
             type="submit"
             data-testid="submit"
-            disabled
+            disabled={!!state.nameError ||
+                !!state.emailError ||
+                !!state.passwordError ||
+                !!state.passwordConfirmationError}
           >
-            Entrar
+            Criar Conta
           </button>
           <span
             className={Styles.link}
