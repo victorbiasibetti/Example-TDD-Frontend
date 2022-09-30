@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import Styles from './signup-styles.scss'
 import {
   LoginHeader,
@@ -10,13 +9,20 @@ import {
 } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
 
-const Signup: React.FC = () => {
-  const navigate = useNavigate()
+const SignUp: React.FC = () => {
+  const [state] = useState({
+    isLoading: false,
+    nameError: 'Campo obrigatório',
+    emailError: 'Campo obrigatório',
+    passwordError: 'Campo obrigatório',
+    passwordConfirmationError: 'Campo obrigatório',
+    mainError: ''
+  })
 
   return (
     <div className={Styles.signup}>
       <LoginHeader />
-      <Context.Provider value={{ state: {} }}>
+      <Context.Provider value={{ state }}>
         <form
           className={Styles.form} >
           <h2>Login</h2>
@@ -36,12 +42,13 @@ const Signup: React.FC = () => {
           <button
             className={Styles.submit}
             type="submit"
+            data-testId="submit"
+            disabled
           >
             Entrar
           </button>
           <span
             className={Styles.link}
-            onClick={() => navigate('/login')}
           >
             Voltar para Login
           </span>
@@ -54,4 +61,4 @@ const Signup: React.FC = () => {
   )
 }
 
-export default Signup
+export default SignUp
