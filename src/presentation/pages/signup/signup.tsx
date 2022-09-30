@@ -42,7 +42,7 @@ const SignUp: React.FC = () => {
           <button
             className={Styles.submit}
             type="submit"
-            data-testId="submit"
+            data-testid="submit"
             disabled
           >
             Entrar
