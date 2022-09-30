@@ -31,8 +31,12 @@ export const populateField = (
   fieldValue: string = faker.random.word()
 ): void => {
   const input = sut.getByTestId(fieldName)
-
   fireEvent.input(input, {
     target: { value: fieldValue }
   })
+}
+
+export const testElementExists = (sut: RenderResult, fieldName: string): void => {
+  const element = sut.getByTestId(fieldName)
+  expect(element).toBeTruthy()
 }
