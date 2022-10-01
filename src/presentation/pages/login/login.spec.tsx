@@ -175,7 +175,7 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest
       .spyOn(saveAccessTokenMock, 'save')
-      .mockResolvedValueOnce(Promise.reject(error))
+      .mockRejectedValueOnce(error)
     simulateValidSubmit(sut)
 
     await waitFor(() => {
