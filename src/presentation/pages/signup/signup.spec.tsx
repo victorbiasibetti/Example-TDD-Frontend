@@ -201,4 +201,11 @@ describe('Login Component', () => {
 
     Helper.testChildCount(sut,'error-wrap', 1)
   })
+
+  test('Should go to login page', async () => {
+    const { sut } = makeSut()
+    const register = sut.getByTestId('login-link')
+    fireEvent.click(register)
+    expect(mockUseNavigate).toHaveBeenCalledWith('/login')
+  })
 })
