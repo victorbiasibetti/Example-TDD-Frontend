@@ -6,7 +6,8 @@ import {
   LoginHeader,
   Footer,
   Input,
-  FormStatus
+  FormStatus,
+  SubmitButton
 } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
@@ -21,6 +22,7 @@ type Props = {
 const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
+    isFormIsInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -31,10 +33,13 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   const navigate = useNavigate()
 
   useEffect(() => {
+    const emailError = validation.validate('email', state.email)
+    const passwordError = validation.validate('password', state.password)
     setState({
       ...state,
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password)
+      emailError ,
+      passwordError,
+      isFormIsInvalid: !!emailError || !!passwordError
     })
   }, [state.email, state.password])
 
@@ -43,7 +48,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   ): Promise<void> => {
     event.preventDefault()
     try {
-      if (state.isLoading || state.emailError || state.passwordError) return
+      if (state.isLoading || state.isFormIsInvalid) return
       setState({ ...state, isLoading: true })
       const account = await authentication.auth({
         email: state.email,
@@ -76,14 +81,9 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
             name="password"
             placeholder="Digite sua senha"
           />
-          <button
-            data-testid="submit"
-            disabled={!!state.emailError || !!state.passwordError}
-            className={Styles.submit}
-            type="submit"
-          >
-            Entrar
-          </button>
+
+          <SubmitButton text='Entrar' />
+
           <span
             data-testid="signup-link"
             className={Styles.link}
