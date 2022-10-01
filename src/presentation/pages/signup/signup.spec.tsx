@@ -2,12 +2,13 @@ import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-libr
 import React from 'react'
 import faker from 'faker'
 import SignUp from './signup'
-import { Helper, ValidationStub, AddAccountSpy } from '@/presentation/test'
+import { Helper, ValidationStub, AddAccountSpy, SaveAccessTokenMock } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/erros'
 
 type SutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
+  saveAccessTokenMock: SaveAccessTokenMock
 }
 
 type SutParams = {
@@ -17,12 +18,14 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const addAccountSpy = new AddAccountSpy()
+  const saveAccessTokenMock = new SaveAccessTokenMock()
   const sut = render(
     <SignUp
     validation={validationStub}
     addAccount={addAccountSpy}
+    saveAccessToken={saveAccessTokenMock}
     />)
-  return { sut, addAccountSpy }
+  return { sut, addAccountSpy, saveAccessTokenMock }
 }
 
 const simulateValidSubmit = (
@@ -38,6 +41,12 @@ const simulateValidSubmit = (
   const submitButton = sut.getByTestId('submit')
   fireEvent.click(submitButton)
 }
+
+const mockUseNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate
+}))
 
 describe('Login Component', () => {
   afterEach(cleanup)
@@ -166,5 +175,15 @@ describe('Login Component', () => {
       Helper.testElementText(sut, 'main-error', error.message)
     })
     Helper.testChildCount(sut,'error-wrap', 1)
+  })
+
+  test('Should call SaveAccessToken on success', async () => {
+    const { sut, addAccountSpy, saveAccessTokenMock } = makeSut()
+    simulateValidSubmit(sut)
+    await waitFor(() => {
+      sut.getByTestId('form')
+      expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken)
+      expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true })
+    })
   })
 })
