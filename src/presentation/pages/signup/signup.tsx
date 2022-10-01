@@ -106,7 +106,11 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
           >
             Criar Conta
           </button>
-          <span className={Styles.link}>
+          <span
+            data-testid="login-link"
+            className={Styles.link}
+            onClick={() => navigate('/login')}
+          >
             Voltar para Login
           </span>
           <FormStatus />
