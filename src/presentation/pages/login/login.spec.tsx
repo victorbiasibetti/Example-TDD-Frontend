@@ -55,15 +55,6 @@ const simulateValidSubmit = (
   fireEvent.click(submitButton)
 }
 
-const testElementText = (
-  sut: RenderResult,
-  fieldName: string,
-  text: string
-): void => {
-  const element = sut.getByTestId(fieldName)
-  expect(element.textContent).toEqual(text)
-}
-
 describe('Login Component', () => {
   afterEach(cleanup)
 
@@ -161,11 +152,11 @@ describe('Login Component', () => {
     const error = new InvalidCredentialsError()
     jest
       .spyOn(authenticationSpy, 'auth')
-      .mockResolvedValueOnce(Promise.reject(error))
+      .mockRejectedValueOnce(error)
     simulateValidSubmit(sut)
 
     await waitFor(() => {
-      testElementText(sut, 'main-error', error.message)
+      Helper.testElementText(sut, 'main-error', error.message)
     })
 
     Helper.testChildCount(sut,'error-wrap', 1)
@@ -190,7 +181,7 @@ describe('Login Component', () => {
     simulateValidSubmit(sut)
 
     await waitFor(() => {
-      testElementText(sut, 'main-error', error.message)
+      Helper.testElementText(sut, 'main-error', error.message)
     })
 
     Helper.testChildCount(sut,'error-wrap', 1)
