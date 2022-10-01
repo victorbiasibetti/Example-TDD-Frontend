@@ -135,11 +135,22 @@ describe('Login Component', () => {
     })
   })
 
-  test('Should call Authentication only once', () => {
+  test('Should call AddAccount only once', () => {
     const { sut, addAccountSpy } = makeSut()
     simulateValidSubmit(sut)
     simulateValidSubmit(sut)
 
     expect(addAccountSpy.callsCount).toBe(1)
+  })
+
+  test('Should not call AddAccount if form is invalid', () => {
+    const validationError = faker.random.words()
+    const { sut, addAccountSpy } = makeSut({
+      validationError
+    })
+    Helper.populateField(sut, 'email')
+
+    fireEvent.submit(sut.getByTestId('form'))
+    expect(addAccountSpy.callsCount).toBe(0)
   })
 })
