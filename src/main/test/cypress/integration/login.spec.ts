@@ -63,4 +63,20 @@ describe('Login', () => {
       // .get('[data-testid="main-error"]').should('contain-text', 'Credenciais inválidas')
     cy.url().should('eq', `${baseUrl}/login`)
     })
+  
+  it('Should present save accessToken if valid credentials are provided', () => {
+    cy.get('[data-testid="email"]')
+      .type('mango@gmail.com')
+    cy.get('[data-testid="password"]')
+      .type('12345')
+    cy.get('[data-testid="submit"]').click()
+    cy.get('[data-testid="error-wrap"]')
+      .get('[data-testid="spinner"]').should('exist')
+      .get('[data-testid="main-error"]').should('not.exist')
+      .get('[data-testid="spinner"]').should('not.exist')
+    // TODO: adicionar quando resolver problema da API
+      // .get('[data-testid="main-error"]').should('contain-text', 'Credenciais inválidas')
+    // cy.url().should('eq', `${baseUrl}/`)
+    // cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    })
 })
