@@ -1,6 +1,6 @@
 import faker from 'faker'
 
-const baseUrl:string = Cypress.config().baseUrl
+const baseUrl:string | null = Cypress.config().baseUrl
 
 describe('Login', () => {
   beforeEach(() => {
@@ -115,5 +115,20 @@ describe('Login', () => {
     cy.get('[data-testid="spinner"]').should('not.exist')
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    })
+
+  it('Should present multiples submits', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.datatype.uuid()
+      }
+    }).as('request')
+    cy.get('[data-testid="email"]')
+      .type(faker.internet.email())
+    cy.get('[data-testid="password"]')
+      .type(faker.random.alphaNumeric(5))
+    cy.get('[data-testid="submit"]').dblclick()
+    cy.get('@request.all').should('have.length', 1)
     })
 })
