@@ -48,35 +48,72 @@ describe('Login', () => {
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
   })
   
-  it('Should present error if invalid credentials are provided', () => {
+  it('Should present InvalidCredentialsError on 401', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 401,
+      body: {
+        error: faker.random.words()
+      }
+    })
     cy.get('[data-testid="email"]')
       .type(faker.internet.email())
     cy.get('[data-testid="password"]')
       .type(faker.random.alphaNumeric(5))
     cy.get('[data-testid="submit"]').click()
-    cy.get('[data-testid="error-wrap"]')
-      .get('[data-testid="spinner"]').should('exist')
-      .get('[data-testid="main-error"]').should('not.exist')
-      .get('[data-testid="spinner"]').should('not.exist')
-      .get('[data-testid="main-error"]').should('exist')
-      // TODO: adicionar quando resolver problema da API
-      // .get('[data-testid="main-error"]').should('contain-text', 'Credenciais inválidas')
+    cy.get('[data-testid="spinner"]').should('not.exist')
+    cy.get('[data-testid="main-error"]').should('contain.text', 'Credenciais inválidas')
+    cy.url().should('eq', `${baseUrl}/login`)
+    })
+
+  it('Should present UnexpectedError on 401', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 400,
+      body: {
+        error: faker.random.words()
+      }
+    })
+    cy.get('[data-testid="email"]')
+      .type(faker.internet.email())
+    cy.get('[data-testid="password"]')
+      .type(faker.random.alphaNumeric(5))
+    cy.get('[data-testid="submit"]').click()
+    cy.get('[data-testid="spinner"]').should('not.exist')
+    cy.get('[data-testid="main-error"]').should('contain.text', 'Algo de errado aconteceu. Tente novamente mais tarde.')
     cy.url().should('eq', `${baseUrl}/login`)
     })
   
-  it('Should present save accessToken if valid credentials are provided', () => {
+  it('Should present UnexpectedError if data is invalid', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        invalidProperty: faker.datatype.uuid()
+      }
+    })    
     cy.get('[data-testid="email"]')
-      .type('mango@gmail.com')
+      .type(faker.internet.email())
     cy.get('[data-testid="password"]')
-      .type('12345')
+      .type(faker.random.alphaNumeric(5))
     cy.get('[data-testid="submit"]').click()
-    cy.get('[data-testid="error-wrap"]')
-      .get('[data-testid="spinner"]').should('exist')
-      .get('[data-testid="main-error"]').should('not.exist')
-      .get('[data-testid="spinner"]').should('not.exist')
-    // TODO: adicionar quando resolver problema da API
-      // .get('[data-testid="main-error"]').should('contain-text', 'Credenciais inválidas')
-    // cy.url().should('eq', `${baseUrl}/`)
-    // cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    cy.get('[data-testid="spinner"]').should('not.exist')
+    cy.get('[data-testid="main-error"]').should('contain.text', 'Algo de errado aconteceu. Tente novamente mais tarde.')
+    cy.url().should('eq', `${baseUrl}/login`)
+    })
+
+  it('Should present save accessToken if valid credentials are provided', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.datatype.uuid()
+      }
+    })    
+    cy.get('[data-testid="email"]')
+      .type(faker.internet.email())
+    cy.get('[data-testid="password"]')
+      .type(faker.random.alphaNumeric(5))
+    cy.get('[data-testid="submit"]').click()
+    cy.get('[data-testid="main-error"]').should('not.exist')
+    cy.get('[data-testid="spinner"]').should('not.exist')
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
     })
 })
