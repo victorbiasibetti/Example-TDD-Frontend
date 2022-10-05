@@ -3,3 +3,5 @@ node_modules
 coverage
 public
 *.scss
+src/main/test/cypress
+cypress.config.ts
