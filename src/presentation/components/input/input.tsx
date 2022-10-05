@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import Styles from './input-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 
@@ -10,27 +10,29 @@ HTMLInputElement
 
 const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(Context)
+  const inputRef = useRef<HTMLInputElement>()
   const error = state[`${props?.name}Error`]
-
-  const getStatus = (): string => {
-    return error ? '🔴' : '🟢'
-  }
-  const getTitle = (): string => {
-    return error || 'ok'
-  }
 
   const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
     setState({ ...state, [event.target.name]: event.target.value })
   }
   return (
     <div className={Styles.inputWrap}>
-      <input {...props} data-testid={props?.name} onChange={handleChange} />
+      <input {...props}
+        placeholder=" "
+        data-testid={props?.name}
+        onChange={handleChange}
+        ref={inputRef}
+        />
+      <label onClick={() => inputRef.current.focus()}>
+        {props?.placeholder}
+      </label>
       <span
-        title={getTitle()}
+        title={error || 'ok'}
         data-testid={`${props?.name}-status`}
         className={Styles.status}
       >
-        {getStatus()}
+        {error ? '🔴' : '🟢'}
       </span>
     </div>
   )
