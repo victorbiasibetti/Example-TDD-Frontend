@@ -54,14 +54,14 @@ describe('Login', () => {
     simulateValidSubmit()    
     testMainError('Credenciais inválidas')    
     testUrl(`/login`)
-    })
+  })
 
   it('Should present UnexpectedError on 401', () => {
     mockUnexpectedError()
     simulateValidSubmit()    
     testMainError('Algo de errado aconteceu. Tente novamente mais tarde.')    
     testUrl(`/login`)
-    })
+  })
   
   it('Should present UnexpectedError if data is invalid', () => {
     mockInvalidData()
