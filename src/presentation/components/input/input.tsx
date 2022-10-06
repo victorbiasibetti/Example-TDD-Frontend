@@ -17,23 +17,25 @@ const Input: React.FC<Props> = (props: Props) => {
     setState({ ...state, [event.target.name]: event.target.value })
   }
   return (
-    <div className={Styles.inputWrap}>
+    <div
+      data-testid={`${props?.name}-wrap`}
+      className={Styles.inputWrap}
+      data-status={error ? 'invalid' : 'valid'}
+    >
       <input {...props}
         placeholder=" "
+        title={error}
         data-testid={props?.name}
         onChange={handleChange}
         ref={inputRef}
         />
-      <label onClick={() => inputRef.current.focus()}>
+      <label
+        data-testid={`${props?.name}-label`}
+        onClick={() => inputRef.current.focus()}
+        title={error}
+      >
         {props?.placeholder}
       </label>
-      <span
-        title={error || 'ok'}
-        data-testid={`${props?.name}-status`}
-        className={Styles.status}
-      >
-        {error ? '🔴' : '🟢'}
-      </span>
     </div>
   )
 }

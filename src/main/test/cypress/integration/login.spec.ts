@@ -8,12 +8,24 @@ describe('Login', () => {
   })
 
   it('Should load with correct initial state', () => {
-    cy.get('[data-testid="email-status"]')
+    cy.get('[data-testid="email-wrap"]')
+      .should('have.attr', 'data-status', 'invalid')
+
+    cy.get('[data-testid="email"]')
       .should('have.attr', 'title', 'Campo obrigatório')
-      .should('contain.text', '🔴')
-    cy.get('[data-testid="password-status"]')
+    
+    cy.get('[data-testid="email-label"]')
       .should('have.attr', 'title', 'Campo obrigatório')
-      .should('contain.text', '🔴')
+    
+    cy.get('[data-testid="password-wrap"]')
+      .should('have.attr', 'data-status', 'invalid')
+
+    cy.get('[data-testid="password"]')
+      .should('have.attr', 'title', 'Campo obrigatório')
+    
+    cy.get('[data-testid="password-label"]')
+      .should('have.attr', 'title', 'Campo obrigatório')
+    
     cy.get('[data-testid="submit"]').should('have.attr', 'disabled')
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
   })
@@ -21,14 +33,23 @@ describe('Login', () => {
   it('Should present error state if form is invalid', () => {
     cy.get('[data-testid="email"]')
       .type(faker.random.word())
-    cy.get('[data-testid="email-status"]')
+
+    cy.get('[data-testid="email-wrap"]')
+      .should('have.attr', 'data-status', 'invalid')
+    cy.get('[data-testid="email"]')
       .should('have.attr', 'title', 'Valor inválido')
-      .should('contain.text', '🔴')
+    cy.get('[data-testid="email-label"]')
+      .should('have.attr', 'title', 'Valor inválido')
+
     cy.get('[data-testid="password"]')
       .type(faker.random.alphaNumeric(3))  
-    cy.get('[data-testid="password-status"]')
+    cy.get('[data-testid="password-wrap"]')
+      .should('have.attr', 'data-status', 'invalid')
+    cy.get('[data-testid="password"]')
       .should('have.attr', 'title', 'Valor inválido')
-      .should('contain.text', '🔴')
+    cy.get('[data-testid="password-label"]')
+      .should('have.attr', 'title', 'Valor inválido')
+      
     cy.get('[data-testid="submit"]').should('have.attr', 'disabled')
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
   })
@@ -36,14 +57,23 @@ describe('Login', () => {
   it('Should present valid state if form is valid', () => {
     cy.get('[data-testid="email"]')
       .type(faker.internet.email())
-    cy.get('[data-testid="email-status"]')
-      .should('have.attr', 'title', 'ok')
-      .should('contain.text', '🟢')
+
+    cy.get('[data-testid="email-wrap"]')
+      .should('have.attr', 'data-status', 'valid')
+    cy.get('[data-testid="email"]')
+      .should('not.have.attr', 'title')
+    cy.get('[data-testid="email-label"]')
+      .should('not.have.attr', 'title')
+
     cy.get('[data-testid="password"]')
       .type(faker.random.alphaNumeric(5))  
-    cy.get('[data-testid="password-status"]')
-      .should('have.attr', 'title', 'ok')
-      .should('contain.text', '🟢')
+    cy.get('[data-testid="password-wrap"]')
+      .should('have.attr', 'data-status', 'valid')
+    cy.get('[data-testid="password"]')
+      .should('not.have.attr', 'title')
+    cy.get('[data-testid="password-label"]')
+      .should('not.have.attr', 'title')
+    
     cy.get('[data-testid="submit"]').should('not.have.attr', 'disabled')
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
   })
