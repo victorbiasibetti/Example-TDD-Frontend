@@ -115,4 +115,11 @@ describe('SignUp', () => {
         cy.get('[data-testid="submit"]').dblclick()
         testHttpCallsCount(1)
     })
+
+    it('Should not call submit if form is invalid', () => {
+        mockOk()
+        cy.get('[data-testid="email"]')
+          .type(faker.internet.email()).type('{enter}')
+        testHttpCallsCount(0)
+    })
 })
