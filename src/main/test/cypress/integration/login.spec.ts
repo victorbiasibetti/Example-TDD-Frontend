@@ -68,7 +68,7 @@ describe('Login', () => {
     simulateValidSubmit()    
     testMainError('Algo de errado aconteceu. Tente novamente mais tarde.')    
     testUrl(`/login`)
-    })
+  })
 
   it('Should present save accessToken if valid credentials are provided', () => {
     mockOk()   
@@ -76,7 +76,7 @@ describe('Login', () => {
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
     testUrl(`/`)
     testLocalStorageItem('accessToken')
-    })
+  })
 
   it('Should present multiples submits', () => {
     mockOk()
@@ -86,12 +86,12 @@ describe('Login', () => {
       .type(faker.random.alphaNumeric(5))
     cy.get('[data-testid="submit"]').dblclick()
     testHttpCallsCount(1)
-    })
+  })
 
   it('Should not call submit if form is invalid', () => {
     mockOk()
     cy.get('[data-testid="email"]')
       .type(faker.internet.email()).type('{enter}')
     testHttpCallsCount(0)
-    })
+  })
 })

@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { testInputStatus, testMainError, testUrl } from "../support/form-helper"
-import { mockEmailInUseError, mockUnexpectedError } from "./signup-mocks"
+import { mockEmailInUseError, mockInvalidData, mockUnexpectedError } from "./signup-mocks"
 
 const simulateValidSubmit = ():void => {
     cy.get('[data-testid="name"]')
@@ -86,6 +86,13 @@ describe('SignUp', () => {
 
     it('Should present UnexpectedError on 401', () => {
         mockUnexpectedError()
+        simulateValidSubmit()    
+        testMainError('Algo de errado aconteceu. Tente novamente mais tarde.')    
+        testUrl(`/signup`)
+    })
+
+    it('Should present UnexpectedError if data is invalid', () => {
+        mockInvalidData()
         simulateValidSubmit()    
         testMainError('Algo de errado aconteceu. Tente novamente mais tarde.')    
         testUrl(`/signup`)
