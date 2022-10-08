@@ -3,11 +3,15 @@ import { testHttpCallsCount, testInputStatus, testLocalStorageItem, testMainErro
 import { mockInvalidCredentialsError, mockInvalidData, mockOk, mockUnexpectedError } from './login-mocks'
 
 const simulateValidSubmit = ():void => {
+  populateFields()
+  cy.get('[data-testid="submit"]').click()
+}
+
+const populateFields = ():void => {
   cy.get('[data-testid="email"]')
       .type(faker.internet.email())
   cy.get('[data-testid="password"]')
     .type(faker.random.alphaNumeric(5))
-  cy.get('[data-testid="submit"]').click()
 }
 
 describe('Login', () => {
@@ -80,10 +84,7 @@ describe('Login', () => {
 
   it('Should present multiples submits', () => {
     mockOk()
-    cy.get('[data-testid="email"]')
-      .type(faker.internet.email())
-    cy.get('[data-testid="password"]')
-      .type(faker.random.alphaNumeric(5))
+    populateFields()
     cy.get('[data-testid="submit"]').dblclick()
     testHttpCallsCount(1)
   })
