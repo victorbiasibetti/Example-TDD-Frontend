@@ -14,27 +14,33 @@
     flex-grow: 1;
     padding: 24px 40px;
     img {
-        width: 60px;
-        align-self: center;
+      width: 60px;
+      align-self: center;
     }
-    .logoutWrap{
-        align-self: center;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+    .logoutWrap { 
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      color: $white;
+      justify-content: center;
+      span { 
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+      a {
         color: $white;
-        justify-content: center;
-        span { 
-            font-size: 16px;
-            margin-bottom: 8px;
+        text-decoration: none;
+        &:hover{
+            text-decoration: underline;
         }
-        a {
-            color: $white;
-            text-decoration: none;
-            &:hover{
-                text-decoration: underline;
-            }
-        }
+      }
     }
   }
 } 
+
+@media only screen and (max-width: 600px) {
+  .headerWrap {    
+    border-top-width: 20px;
+  }
+}
