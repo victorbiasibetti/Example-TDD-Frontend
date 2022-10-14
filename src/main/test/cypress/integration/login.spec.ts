@@ -74,12 +74,12 @@ describe('Login', () => {
     testUrl(`/login`)
   })
 
-  it('Should present save accessToken if valid credentials are provided', () => {
+  it('Should present save account if valid credentials are provided', () => {
     mockOk()   
     simulateValidSubmit()
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
     testUrl(`/`)
-    testLocalStorageItem('accessToken')
+    testLocalStorageItem('account')
   })
 
   it('Should present multiples submits', () => {

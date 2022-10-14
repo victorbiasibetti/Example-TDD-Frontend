@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
 import faker from 'faker'
 import {
   render,
@@ -10,13 +9,13 @@ import {
   RenderResult
 } from '@testing-library/react'
 import Login from './login'
-import { ValidationStub, AuthenticationSpy, SaveAccessTokenMock, Helper } from '@/presentation/test'
+import { ValidationStub, AuthenticationSpy, UpdateCurrentAccountMock, Helper } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/erros'
 
 type SutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
-  saveAccessTokenMock: SaveAccessTokenMock
+  updateCurrentAccountMock: UpdateCurrentAccountMock
 }
 type SutParams = {
   validationError: string
@@ -26,14 +25,14 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const authenticationSpy = new AuthenticationSpy()
-  const saveAccessTokenMock = new SaveAccessTokenMock()
+  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
   const sut = render(
     <Login
     validation={validationStub}
     authentication={authenticationSpy}
-    saveAccessToken={saveAccessTokenMock}/>
+    updateCurrentAccount={updateCurrentAccountMock}/>
   )
-  return { sut, authenticationSpy, saveAccessTokenMock }
+  return { sut, authenticationSpy, updateCurrentAccountMock }
 }
 
 const mockUseNavigate = jest.fn()
@@ -160,21 +159,21 @@ describe('Login Component', () => {
     Helper.testChildCount(sut,'error-wrap', 1)
   })
 
-  test('Should call SaveAccessToken on success', async () => {
-    const { sut, authenticationSpy, saveAccessTokenMock } = makeSut()
+  test('Should call UpdateCurrentAccount on success', async () => {
+    const { sut, authenticationSpy, updateCurrentAccountMock } = makeSut()
     simulateValidSubmit(sut)
     await waitFor(() => {
       sut.getByTestId('form')
-      expect(saveAccessTokenMock.accessToken).toBe(authenticationSpy.account.accessToken)
+      expect(updateCurrentAccountMock.account).toEqual(authenticationSpy.account)
       expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
   })
 
-  test('Should present error if SaveAccessToken fails', async () => {
-    const { sut, saveAccessTokenMock } = makeSut()
+  test('Should present error if UpdateCurrentAccount fails', async () => {
+    const { sut, updateCurrentAccountMock } = makeSut()
     const error = new InvalidCredentialsError()
     jest
-      .spyOn(saveAccessTokenMock, 'save')
+      .spyOn(updateCurrentAccountMock, 'save')
       .mockRejectedValueOnce(error)
     simulateValidSubmit(sut)
 
