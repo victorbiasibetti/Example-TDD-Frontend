@@ -2,13 +2,15 @@ import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-libr
 import React from 'react'
 import faker from 'faker'
 import SignUp from './signup'
-import { Helper, ValidationStub, AddAccountSpy, UpdateCurrentAccountMock } from '@/presentation/test'
+import { Helper, ValidationStub, AddAccountSpy } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/erros'
+import { ApiContext } from '@/presentation/contexts'
+import { AccountModel } from '@/domain/models'
 
 type SutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
-  updateCurrentAccountMock: UpdateCurrentAccountMock
+  setCurrentAccountMock: (account: AccountModel) => void
 }
 
 type SutParams = {
@@ -18,14 +20,16 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const addAccountSpy = new AddAccountSpy()
-  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
+  const setCurrentAccountMock = jest.fn()
   const sut = render(
-    <SignUp
-    validation={validationStub}
-    addAccount={addAccountSpy}
-    updateCurrentAccount={updateCurrentAccountMock}
-    />)
-  return { sut, addAccountSpy, updateCurrentAccountMock }
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <SignUp
+      validation={validationStub}
+      addAccount={addAccountSpy}
+      />
+    </ApiContext.Provider>
+  )
+  return { sut, addAccountSpy, setCurrentAccountMock }
 }
 
 const simulateValidSubmit = (
@@ -178,28 +182,13 @@ describe('Login Component', () => {
   })
 
   test('Should call UpdateCurrentAccount on success', async () => {
-    const { sut, addAccountSpy, updateCurrentAccountMock } = makeSut()
+    const { sut, addAccountSpy, setCurrentAccountMock } = makeSut()
     simulateValidSubmit(sut)
     await waitFor(() => {
       sut.getByTestId('form')
-      expect(updateCurrentAccountMock.account).toEqual(addAccountSpy.account)
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(addAccountSpy.account)
       expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
-  })
-
-  test('Should present error if UpdateCurrentAccount fails', async () => {
-    const { sut, updateCurrentAccountMock } = makeSut()
-    const error = new EmailInUseError()
-    jest
-      .spyOn(updateCurrentAccountMock, 'save')
-      .mockRejectedValueOnce(error)
-    simulateValidSubmit(sut)
-
-    await waitFor(() => {
-      Helper.testElementText(sut, 'main-error', error.message)
-    })
-
-    Helper.testChildCount(sut,'error-wrap', 1)
   })
 
   test('Should go to login page', async () => {

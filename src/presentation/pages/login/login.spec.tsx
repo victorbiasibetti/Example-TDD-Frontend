@@ -8,13 +8,15 @@ import {
   RenderResult
 } from '@testing-library/react'
 import Login from './login'
-import { ValidationStub, AuthenticationSpy, UpdateCurrentAccountMock, Helper } from '@/presentation/test'
+import { ValidationStub, AuthenticationSpy, Helper } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/erros'
+import { ApiContext } from '@/presentation/contexts'
+import { AccountModel } from '@/domain/models'
 
 type SutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
-  updateCurrentAccountMock: UpdateCurrentAccountMock
+  setCurrentAccountMock: (account: AccountModel) => void
 }
 type SutParams = {
   validationError: string
@@ -24,14 +26,17 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const authenticationSpy = new AuthenticationSpy()
-  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
+  const setCurrentAccountMock = jest.fn()
   const sut = render(
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+
     <Login
     validation={validationStub}
     authentication={authenticationSpy}
-    updateCurrentAccount={updateCurrentAccountMock}/>
+    />
+    </ApiContext.Provider>
   )
-  return { sut, authenticationSpy, updateCurrentAccountMock }
+  return { sut, authenticationSpy, setCurrentAccountMock }
 }
 
 const mockUseNavigate = jest.fn()
@@ -159,28 +164,13 @@ describe('Login Component', () => {
   })
 
   test('Should call UpdateCurrentAccount on success', async () => {
-    const { sut, authenticationSpy, updateCurrentAccountMock } = makeSut()
+    const { sut, authenticationSpy, setCurrentAccountMock } = makeSut()
     simulateValidSubmit(sut)
     await waitFor(() => {
       sut.getByTestId('form')
-      expect(updateCurrentAccountMock.account).toEqual(authenticationSpy.account)
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(authenticationSpy.account)
       expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
-  })
-
-  test('Should present error if UpdateCurrentAccount fails', async () => {
-    const { sut, updateCurrentAccountMock } = makeSut()
-    const error = new InvalidCredentialsError()
-    jest
-      .spyOn(updateCurrentAccountMock, 'save')
-      .mockRejectedValueOnce(error)
-    simulateValidSubmit(sut)
-
-    await waitFor(() => {
-      Helper.testElementText(sut, 'main-error', error.message)
-    })
-
-    Helper.testChildCount(sut,'error-wrap', 1)
   })
 
   test('Should go to signup page', async () => {
