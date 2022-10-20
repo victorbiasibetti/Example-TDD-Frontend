@@ -12,13 +12,13 @@
     "test:coveralls": "npm run test:ci && coveralls < covarage/lcov.info",
     "test:cypress": "cypress open",
     "check": "npm-check -u -s"
-    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.13.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/axios": "^0.14.0",
     "@types/faker": "5.5.3",
