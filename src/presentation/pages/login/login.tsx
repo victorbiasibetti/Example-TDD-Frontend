@@ -52,12 +52,12 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     try {
       if (state.isLoading || state.isFormIsInvalid) return
       setState({ ...state, isLoading: true })
-      // const account = await authentication.auth({
-      //   email: state.email,
-      //   password: state.password
-      // })
-      // await setCurrentAccount(account)
-      await setCurrentAccount({ accessToken: 'accessToken', name: 'Victor' })
+      const account = await authentication.auth({
+        email: state.email,
+        password: state.password
+      })
+      await setCurrentAccount(account)
+      // await setCurrentAccount({ accessToken: 'accessToken', name: 'Victor' })
       navigate('/', { replace: true })
     } catch (error) {
       setState({
