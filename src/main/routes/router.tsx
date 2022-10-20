@@ -16,17 +16,17 @@ const Router: React.FC = () => {
       setCurrentAccount: setCurrentAccountAdapter,
       getCurrentAccount: getCurrentAccountAdapter
     }}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<MakeLogin />} />
-        <Route path="/signup" element={<MakeSignUp />} />
-        <Route path="/" element={
-          <PrivateRoute>
-            <SurveyList />
-          </PrivateRoute>}>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<MakeLogin />} />
+          <Route path="/signup" element={<MakeSignUp />} />
+          <Route path="/" element={
+            <PrivateRoute>
+              <SurveyList />
+            </PrivateRoute>}>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ApiContext.Provider>
   )
 }
