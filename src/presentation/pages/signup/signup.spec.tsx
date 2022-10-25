@@ -5,11 +5,11 @@ import SignUp from './signup'
 import { Helper, ValidationStub, AddAccountSpy } from '@/presentation/test'
 import { EmailInUseError } from '@/domain/erros'
 import { ApiContext } from '@/presentation/contexts'
-import { AccountModel } from '@/domain/models'
+import { AddAccount } from '@/domain/usecases'
 
 type SutTypes = {
   addAccountSpy: AddAccountSpy
-  setCurrentAccountMock: (account: AccountModel) => void
+  setCurrentAccountMock: (account: AddAccount.Model) => void
 }
 
 type SutParams = {

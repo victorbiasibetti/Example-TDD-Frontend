@@ -10,11 +10,11 @@ import Login from './login'
 import { ValidationStub, AuthenticationSpy, Helper } from '@/presentation/test'
 import { InvalidCredentialsError } from '@/domain/erros'
 import { ApiContext } from '@/presentation/contexts'
-import { AccountModel } from '@/domain/models'
+import { Authentication } from '@/domain/usecases'
 
 type SutTypes = {
   authenticationSpy: AuthenticationSpy
-  setCurrentAccountMock: (account: AccountModel) => void
+  setCurrentAccountMock: (account: Authentication.Model) => void
 }
 type SutParams = {
   validationError: string
