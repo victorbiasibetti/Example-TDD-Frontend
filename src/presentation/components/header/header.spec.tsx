@@ -12,24 +12,24 @@ jest.mock('react-router-dom', () => ({
 }))
 
 type SutTypes = {
-  setCurrectAccountMock: (account: AccountModel) => void
+  setCurrentAccountMock: (account: AccountModel) => void
 }
 
 const makeSut = (account = mockAccountModel()): SutTypes => {
-  const setCurrectAccountMock = jest.fn()
+  const setCurrentAccountMock = jest.fn()
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: setCurrectAccountMock, getCurrentAccount: () => account }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => account }}>
       <Header />
     </ApiContext.Provider>
   )
-  return { setCurrectAccountMock }
+  return { setCurrentAccountMock }
 }
 
 describe('Header Component', () => {
   test('Should call setCurrentAccount with null', () => {
-    const { setCurrectAccountMock } = makeSut()
+    const { setCurrentAccountMock } = makeSut()
     fireEvent.click(screen.getByTestId('logout'))
-    expect(setCurrectAccountMock).toHaveBeenCalledWith(undefined)
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(mockUseNavigate).toHaveBeenCalledWith('/login', { replace: true })
   })
 

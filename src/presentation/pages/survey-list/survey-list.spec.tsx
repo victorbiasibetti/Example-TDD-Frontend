@@ -3,8 +3,9 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SurveyList } from '@/presentation/pages'
 import { LoadSurveyList } from '@/domain/usecases'
 import { mockAccountModel, mockSurveyListModel } from '@/domain/test'
-import { UnexpectedError } from '@/domain/erros'
+import { AccessDeniedError, UnexpectedError } from '@/domain/erros'
 import { ApiContext } from '@/presentation/contexts'
+import { AccountModel } from '@/domain/models'
 
 class LoadSurveyListSpy implements LoadSurveyList {
   callsCount = 0
@@ -17,6 +18,7 @@ class LoadSurveyListSpy implements LoadSurveyList {
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy
+  setCurrentAccountMock: (account: AccountModel) => void
 }
 
 const mockUseNavigate = jest.fn()
@@ -32,7 +34,7 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
       <SurveyList loadSurveyList={loadSurveyListSpy}/>
     </ApiContext.Provider>
   )
-  return { loadSurveyListSpy }
+  return { loadSurveyListSpy, setCurrentAccountMock }
 }
 
 describe('SurveyList Component', () => {
@@ -56,7 +58,7 @@ describe('SurveyList Component', () => {
     })
   })
 
-  test('Should render error on failure', async () => {
+  test('Should render error on UnexpectedError', async () => {
     const loadSurveyListSpy = new LoadSurveyListSpy()
     const error = new UnexpectedError()
     jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(error)
@@ -64,6 +66,16 @@ describe('SurveyList Component', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
       expect(screen.getByTestId('error')).toHaveTextContent(error.message)
+    })
+  })
+
+  test('Should logout on AccessDeniedError', async () => {
+    const loadSurveyListSpy = new LoadSurveyListSpy()
+    jest.spyOn(loadSurveyListSpy, 'loadAll').mockRejectedValueOnce(new AccessDeniedError())
+    const { setCurrentAccountMock } = makeSut(loadSurveyListSpy)
+    await waitFor(() => {
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+      expect(mockUseNavigate).toHaveBeenCalledWith('/login', { replace: true })
     })
   })
 
