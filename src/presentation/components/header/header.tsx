@@ -5,7 +5,7 @@ import { ApiContext } from '@/presentation/contexts'
 import { useNavigate } from 'react-router-dom'
 
 const Header: React.FC = () => {
-  const { setCurrentAccount } = useContext(ApiContext)
+  const { setCurrentAccount, getCurrentAccount } = useContext(ApiContext)
   const navigate = useNavigate()
   const logout = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     event.preventDefault()
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
       <div className={Styles.headerContent}>
         <Logo />
         <div className={Styles.logoutWrap}>
-          <span>Victor</span>
+          <span data-testid="username">{getCurrentAccount().name}</span>
           <a data-testid='logout' href="#" onClick={logout}>Logout</a>
         </div>
       </div>
