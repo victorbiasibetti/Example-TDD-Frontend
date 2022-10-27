@@ -4,6 +4,7 @@ import { SurveyList } from '@/presentation/pages'
 import { LoadSurveyList } from '@/domain/usecases'
 import { mockSurveyListModel } from '@/domain/test'
 import { UnexpectedError } from '@/domain/erros'
+import { ApiContext } from '@/presentation/contexts'
 
 class LoadSurveyListSpy implements LoadSurveyList {
   callsCount = 0
@@ -18,8 +19,19 @@ type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy
 }
 
+const mockUseNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate
+}))
+
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
-  render(<SurveyList loadSurveyList={loadSurveyListSpy}/>)
+  const setCurrentAccountMock = jest.fn()
+  render(
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <SurveyList loadSurveyList={loadSurveyListSpy}/>
+    </ApiContext.Provider>
+  )
   return { loadSurveyListSpy }
 }
 
