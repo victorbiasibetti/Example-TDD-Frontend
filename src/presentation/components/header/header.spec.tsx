@@ -1,4 +1,5 @@
 import { AccountModel } from '@/domain/models'
+import { mockAccountModel } from '@/domain/test'
 import { Header } from '@/presentation/components'
 import { ApiContext } from '@/presentation/contexts'
 import { fireEvent, render, screen } from '@testing-library/react'
@@ -14,10 +15,10 @@ type SutTypes = {
   setCurrectAccountMock: (account: AccountModel) => void
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (account = mockAccountModel()): SutTypes => {
   const setCurrectAccountMock = jest.fn()
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: setCurrectAccountMock }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrectAccountMock, getCurrentAccount: () => account }}>
       <Header />
     </ApiContext.Provider>
   )
@@ -30,5 +31,11 @@ describe('Header Component', () => {
     fireEvent.click(screen.getByTestId('logout'))
     expect(setCurrectAccountMock).toHaveBeenCalledWith(undefined)
     expect(mockUseNavigate).toHaveBeenCalledWith('/login', { replace: true })
+  })
+
+  test('Should render username correctly', () => {
+    const account = mockAccountModel()
+    makeSut(account)
+    expect(screen.getByTestId('username')).toHaveTextContent(account.name)
   })
 })
