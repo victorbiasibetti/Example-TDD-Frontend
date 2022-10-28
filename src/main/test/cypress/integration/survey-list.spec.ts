@@ -1,7 +1,7 @@
 import React from 'react'
 
 import faker from 'faker'
-import { mockUnexpectedError } from '../support/survey-list-mocks'
+import { mockAccessDeniedError, mockUnexpectedError } from '../support/survey-list-mocks'
 import { setLocalStorageItem, testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
 
 describe('SurveyList', () => {
@@ -13,6 +13,12 @@ describe('SurveyList', () => {
     mockUnexpectedError()
     cy.visit('')
     cy.get('[data-testid="error"]').should('contain.text', 'Algo de errado aconteceu. Tente novamente mais tarde.')
+  })
+  
+  it('Should logout on AccessDeniedError', () => {
+    mockAccessDeniedError()
+    cy.visit('')
+    testUrl('/login')
   })
   
 })
