@@ -1,6 +1,7 @@
 import faker from 'faker'
-import { testHttpCallsCount, testInputStatus, testLocalStorageItem, testMainError, testUrl } from '../support/form-helper'
-import { mockInvalidCredentialsError, mockInvalidData, mockOk, mockUnexpectedError } from './login-mocks'
+import { testInputStatus, testMainError  } from '../support/form-helpers'
+import { mockInvalidCredentialsError, mockOk, mockUnexpectedError } from './login-mocks'
+import { testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
 
 const simulateValidSubmit = ():void => {
   populateFields()
@@ -67,13 +68,6 @@ describe('Login', () => {
     testUrl(`/login`)
   })
   
-  it('Should present UnexpectedError if data is invalid', () => {
-    mockInvalidData()
-    simulateValidSubmit()    
-    testMainError('Algo de errado aconteceu. Tente novamente mais tarde.')    
-    testUrl(`/login`)
-  })
-
   it('Should present save account if valid credentials are provided', () => {
     mockOk()   
     simulateValidSubmit()
