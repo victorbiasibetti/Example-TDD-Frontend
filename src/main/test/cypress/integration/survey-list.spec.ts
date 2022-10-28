@@ -2,7 +2,7 @@ import React from 'react'
 
 import faker from 'faker'
 import { mockAccessDeniedError, mockUnexpectedError } from '../support/survey-list-mocks'
-import { setLocalStorageItem, testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
+import { getLocalStorageItem, setLocalStorageItem, testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
 
 describe('SurveyList', () => {
   beforeEach(() => {
@@ -19,6 +19,12 @@ describe('SurveyList', () => {
     mockAccessDeniedError()
     cy.visit('')
     testUrl('/login')
+  })
+  it('Should present correct username', () => {
+    mockUnexpectedError()
+    cy.visit('')
+    const { name } = getLocalStorageItem('account')
+    cy.get('[data-testid="username"]').should('contain.text', name)
   })
   
 })
