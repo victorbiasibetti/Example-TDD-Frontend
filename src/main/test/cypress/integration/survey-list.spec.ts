@@ -26,5 +26,11 @@ describe('SurveyList', () => {
     const { name } = getLocalStorageItem('account')
     cy.get('[data-testid="username"]').should('contain.text', name)
   })
+  it('Should logout on logout link click', () => {
+    mockUnexpectedError()
+    cy.visit('')
+    cy.get('[data-testid="logout"]').click()
+    testUrl('/login')
+  })
   
 })

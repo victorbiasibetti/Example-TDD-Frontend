@@ -11,7 +11,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:8080',
     supportFile: false,
   },
-  
+  chromeWebSecurity:false,  
   fixturesFolder: false,
   
 });
