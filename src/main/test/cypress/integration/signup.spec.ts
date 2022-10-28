@@ -1,6 +1,7 @@
+import React from 'react'
 import faker from 'faker'
 import { testInputStatus, testMainError } from "../support/form-helpers"
-import { mockEmailInUseError, mockOk, mockUnexpectedError } from "./signup-mocks"
+import { mockEmailInUseError, mockOk, mockUnexpectedError } from "../support/signup-mocks"
 import { testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
 
 const simulateValidSubmit = ():void => {
