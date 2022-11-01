@@ -8,7 +8,7 @@ import * as Http from '../utils/http-mocks'
 const path = /login/
 const mockInvalidCredentialsError = ():void => Http.mockUnathorizedError(path)
 const mockUnexpectedError = ():void => Http.mockServerError(path, 'POST')
-const mockSuccess = ():void => Http.mockOk(path, 'POST', 'fx:account')
+const mockSuccess = ():void => Http.mockOk(path, 'POST', 'account')
 
 
 const simulateValidSubmit = ():void => {
