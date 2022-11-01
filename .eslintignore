@@ -5,3 +5,4 @@ public
 *.scss
 src/main/test/cypress
 cypress.config.ts
+dist
