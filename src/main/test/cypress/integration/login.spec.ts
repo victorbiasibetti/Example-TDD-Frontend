@@ -1,9 +1,15 @@
 import React from 'react'
 import ReactDOM  from 'react-router-dom'
 import faker from 'faker'
-import { testInputStatus, testMainError  } from '../support/form-helpers'
-import { mockInvalidCredentialsError, mockOk, mockUnexpectedError } from '../support/login-mocks'
-import { testHttpCallsCount, testLocalStorageItem, testUrl } from '../support/helpers'
+import { testInputStatus, testMainError  } from '../utils/form-helpers'
+import { testHttpCallsCount, testLocalStorageItem, testUrl } from '../utils/helpers'
+import * as Http from '../utils/http-mocks'
+
+const path = /login/
+const mockInvalidCredentialsError = ():void => Http.mockUnathorizedError(path)
+const mockUnexpectedError = ():void => Http.mockServerError(path, 'POST')
+const mockSuccess = ():void => Http.mockOk(path, 'POST', 'fx:account')
+
 
 const simulateValidSubmit = ():void => {
   populateFields()
@@ -71,7 +77,7 @@ describe('Login', () => {
   })
   
   it('Should present save account if valid credentials are provided', () => {
-    mockOk()   
+    mockSuccess()   
     simulateValidSubmit()
     cy.get('[data-testid="error-wrap"]').should('not.have.descendants')
     testUrl(`/`)
@@ -79,14 +85,14 @@ describe('Login', () => {
   })
 
   it('Should present multiples submits', () => {
-    mockOk()
+    mockSuccess()
     populateFields()
     cy.get('[data-testid="submit"]').dblclick()
     testHttpCallsCount(1)
   })
 
   it('Should not call submit if form is invalid', () => {
-    mockOk()
+    mockSuccess()
     cy.get('[data-testid="email"]')
       .type(faker.internet.email()).type('{enter}')
     testHttpCallsCount(0)

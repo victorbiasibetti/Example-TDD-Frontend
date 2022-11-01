@@ -12,6 +12,5 @@ export default defineConfig({
     supportFile: false,
   },
   chromeWebSecurity:false,  
-  fixturesFolder: false,
-  
+  fixturesFolder: 'src/main/test/cypress/fixtures',  
 });
