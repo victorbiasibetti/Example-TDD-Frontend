@@ -1,9 +1,8 @@
 import faker from 'faker'
-import { HttpGetClientSpy } from '@/data/test'
+import { HttpGetClientSpy , mockRemoteSurveyListModel } from '@/data/test'
 import { RemoteLoadSurveyList } from './remote-load-survey-list'
 import { HttpStatusCode } from '@/data/protocols/http'
 import { AccessDeniedError, UnexpectedError } from '@/domain/erros'
-import { mockRemoteSurveyListModel } from '@/data/test/mock-remote-survey-list'
 
 type SutTypes = {
   sut: RemoteLoadSurveyList
