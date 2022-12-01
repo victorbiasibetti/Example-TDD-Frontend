@@ -9,6 +9,7 @@ import {
 } from '@/main/factories/pages'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@/main/adapters/currentAccountAdapter'
 import { PrivateRoute } from '@/presentation/components'
+import { SurveyResult } from '@/presentation/pages'
 
 const Router: React.FC = () => {
   return (
@@ -24,6 +25,11 @@ const Router: React.FC = () => {
           <Route path="/" element={
             <PrivateRoute>
               <MakeSurveyList />
+            </PrivateRoute>}>
+          </Route>
+          <Route path="/surveys" element={
+            <PrivateRoute>
+              <SurveyResult />
             </PrivateRoute>}>
           </Route>
         </Routes>
