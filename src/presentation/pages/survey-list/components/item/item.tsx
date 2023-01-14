@@ -13,7 +13,7 @@ const SurveyItem: React.FC<Props> = ({ survey }: Props) => {
     <li className={Styles.surveyItemWrap}>
       <div className={Styles.surveyContent}>
         <Icon iconName={iconName} className={Styles.iconWrap}/>
-        <Calendar className={Styles.calendarWrapper} date={survey.date}/>
+        <Calendar className={Styles.calendarWrap} date={survey.date}/>
         <p data-testid="question">{survey.question}</p>
       </div>
       <footer>Ver Resultado</footer>
