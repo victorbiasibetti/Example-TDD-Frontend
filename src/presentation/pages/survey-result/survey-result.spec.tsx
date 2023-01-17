@@ -3,7 +3,8 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { SurveyResult } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { LoadSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
-import { UnexpectedError } from '@/domain/erros'
+import { AccessDeniedError, UnexpectedError } from '@/domain/erros'
+import { AccountModel } from '@/domain/models'
 
 const mockUseNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -13,16 +14,19 @@ jest.mock('react-router-dom', () => ({
 
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy
+  setCurrentAccountMock: (account: AccountModel) => void
 }
 
 const makeSut = (loadSurveyResultSpy = new LoadSurveyResultSpy()): SutTypes => {
+  const setCurrentAccountMock = jest.fn()
   render(
-    <ApiContext.Provider value={{ setCurrentAccount: jest.fn(), getCurrentAccount: () => mockAccountModel() }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock, getCurrentAccount: () => mockAccountModel() }}>
       <SurveyResult loadSurveyResult={loadSurveyResultSpy}/>
     </ApiContext.Provider>
   )
   return {
-    loadSurveyResultSpy
+    loadSurveyResultSpy,
+    setCurrentAccountMock
   }
 }
 describe('SurveyResult Component', () => {
@@ -82,6 +86,16 @@ describe('SurveyResult Component', () => {
       expect(screen.queryByTestId('question')).not.toBeInTheDocument()
       expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
       expect(screen.getByTestId('error')).toHaveTextContent(error.message)
+    })
+  })
+
+  test('Should logout on AccessDeniedError', async () => {
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    jest.spyOn(loadSurveyResultSpy, 'load').mockRejectedValueOnce(new AccessDeniedError())
+    const { setCurrentAccountMock } = makeSut(loadSurveyResultSpy)
+    await waitFor(() => {
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+      expect(mockUseNavigate).toHaveBeenCalledWith('/login', { replace: true })
     })
   })
 })
