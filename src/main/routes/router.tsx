@@ -5,11 +5,11 @@ import { ApiContext } from '@/presentation/contexts'
 import {
   makeLogin as MakeLogin,
   makeSignUp as MakeSignUp,
-  makeSurveyList as MakeSurveyList
+  makeSurveyList as MakeSurveyList,
+  makeSurveyResult as MakeSurveyResult
 } from '@/main/factories/pages'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@/main/adapters/currentAccountAdapter'
 import { PrivateRoute } from '@/presentation/components'
-import { SurveyResult } from '@/presentation/pages'
 
 const Router: React.FC = () => {
   return (
@@ -27,9 +27,9 @@ const Router: React.FC = () => {
               <MakeSurveyList />
             </PrivateRoute>}>
           </Route>
-          <Route path="/surveys" element={
+          <Route path="/surveys/:id" element={
             <PrivateRoute>
-              <SurveyResult />
+              <MakeSurveyResult />
             </PrivateRoute>}>
           </Route>
         </Routes>
