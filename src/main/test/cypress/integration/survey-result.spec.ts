@@ -39,4 +39,23 @@ describe("SurveyResult", () => {
     mockAccessDeniedError();
     testUrl("/login");
   });
+
+  it("Should present survey result", () => {
+    cy.visit("/surveys/any_id");
+    mockSuccess();
+    cy.get('[data-testid="question"]').should("have.text", "Question");
+    cy.get('[data-testid="day"]').should("have.text", "21");
+    cy.get('[data-testid="month"]').should("have.text", "dez");
+    cy.get('[data-testid="year"]').should("have.text", "2022");
+    cy.get("li:nth-child(1)").then((li) => {
+      assert.equal(li.find('[data-testid="answer"]').text(), "any_answer");
+      assert.equal(li.find('[data-testid="percent"]').text(), "80%");
+      assert.equal(li.find('[data-testid="image"]').attr("src"), "any_image");
+    });
+    cy.get("li:nth-child(2)").then((li) => {
+      assert.equal(li.find('[data-testid="answer"]').text(), "any_answer2");
+      assert.equal(li.find('[data-testid="percent"]').text(), "20%");
+      assert.notExists(li.find('[data-testid="image"]'));
+    });
+  });
 });

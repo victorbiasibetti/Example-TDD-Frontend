@@ -1,5 +1,5 @@
   {
-    "question": "Question 1",
+    "question": "Question",
     "date": "2022-12-21T00:00:00",
     "answers": [{
       "image": "any_image",
@@ -11,7 +11,7 @@
     {
       "answer": "any_answer2",
       "count": 12,
-      "percent": 40,
+      "percent": 20,
       "isCurrentAccountAnswer": false
     }
   ]
