@@ -1,16 +1,12 @@
 import React from "react";
 
 import mockSurveyResult from "../fixtures/survey-result.json";
-import {
-  getLocalStorageItem,
-  setLocalStorageItem,
-  testUrl,
-} from "../utils/helpers";
+import { setLocalStorageItem, testUrl } from "../utils/helpers";
 import * as Http from "../utils/http-mocks";
 
 const path = /surveys/;
-const mockUnexpectedError = (): void => Http.mockServerError(path, "GET");
 const mockSuccess = (): void => Http.mockOk(path, "GET", mockSurveyResult);
+const mockAccessDeniedError = (): void => Http.mockForbiddenError(path, "GET");
 
 describe("SurveyResult", () => {
   beforeEach(() => {
@@ -36,5 +32,11 @@ describe("SurveyResult", () => {
     mockSuccess();
     cy.get('[data-testid="reload"]').click();
     cy.get('[data-testid="question"]').should("exist");
+  });
+
+  it("Should logout on AccessDeniedError", () => {
+    cy.visit("/surveys/any_id");
+    mockAccessDeniedError();
+    testUrl("/login");
   });
 });
