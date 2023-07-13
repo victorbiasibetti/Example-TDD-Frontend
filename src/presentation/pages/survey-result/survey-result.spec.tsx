@@ -4,6 +4,7 @@ import { SurveyResult } from "@/presentation/pages";
 import { ApiContext } from "@/presentation/contexts";
 import {
   LoadSurveyResultSpy,
+  SaveSurveyResultSpy,
   mockAccountModel,
   mockSurveyResultModel,
 } from "@/domain/test";
@@ -18,10 +19,19 @@ jest.mock("react-router-dom", () => ({
 
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy;
+  saveSurveyResultSpy: SaveSurveyResultSpy;
   setCurrentAccountMock: (account: AccountModel) => void;
 };
 
-const makeSut = (loadSurveyResultSpy = new LoadSurveyResultSpy()): SutTypes => {
+type SutParams = {
+  loadSurveyResultSpy?: LoadSurveyResultSpy;
+  saveSurveyResultSpy?: SaveSurveyResultSpy;
+};
+
+const makeSut = ({
+  loadSurveyResultSpy = new LoadSurveyResultSpy(),
+  saveSurveyResultSpy = new SaveSurveyResultSpy(),
+}: SutParams = {}): SutTypes => {
   const setCurrentAccountMock = jest.fn();
   render(
     <ApiContext.Provider
@@ -30,11 +40,15 @@ const makeSut = (loadSurveyResultSpy = new LoadSurveyResultSpy()): SutTypes => {
         getCurrentAccount: () => mockAccountModel(),
       }}
     >
-      <SurveyResult loadSurveyResult={loadSurveyResultSpy} />
+      <SurveyResult
+        loadSurveyResult={loadSurveyResultSpy}
+        saveSurveyResult={saveSurveyResultSpy}
+      />
     </ApiContext.Provider>
   );
   return {
     loadSurveyResultSpy,
+    saveSurveyResultSpy,
     setCurrentAccountMock,
   };
 };
@@ -60,7 +74,7 @@ describe("SurveyResult Component", () => {
       date: new Date("2022-01-10T00:00:00"),
     });
     loadSurveyResultSpy.surveyResult = surveyResult;
-    makeSut(loadSurveyResultSpy);
+    makeSut({ loadSurveyResultSpy });
     await waitFor(() => {
       screen.getByTestId("survey-result");
       expect(screen.getByTestId("day")).toHaveTextContent("10");
@@ -98,7 +112,7 @@ describe("SurveyResult Component", () => {
     const loadSurveyResultSpy = new LoadSurveyResultSpy();
     const error = new UnexpectedError();
     jest.spyOn(loadSurveyResultSpy, "load").mockRejectedValueOnce(error);
-    makeSut(loadSurveyResultSpy);
+    makeSut({ loadSurveyResultSpy });
     await waitFor(() => {
       expect(screen.queryByTestId("question")).not.toBeInTheDocument();
       expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
@@ -111,7 +125,7 @@ describe("SurveyResult Component", () => {
     jest
       .spyOn(loadSurveyResultSpy, "load")
       .mockRejectedValueOnce(new AccessDeniedError());
-    const { setCurrentAccountMock } = makeSut(loadSurveyResultSpy);
+    const { setCurrentAccountMock } = makeSut({ loadSurveyResultSpy });
     await waitFor(() => {
       expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined);
       expect(mockUseNavigate).toHaveBeenCalledWith("/login", { replace: true });
@@ -123,7 +137,7 @@ describe("SurveyResult Component", () => {
     jest
       .spyOn(loadSurveyResultSpy, "load")
       .mockRejectedValueOnce(new UnexpectedError());
-    makeSut(loadSurveyResultSpy);
+    makeSut({ loadSurveyResultSpy });
     await waitFor(() => {
       fireEvent.click(screen.getByTestId("reload"));
       expect(loadSurveyResultSpy.callsCount).toBe(1);
@@ -144,6 +158,18 @@ describe("SurveyResult Component", () => {
       const answerWrap = screen.queryAllByTestId("answer-wrap");
       fireEvent.click(answerWrap[0]);
       expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
+    });
+  });
+
+  test("Should call SaveSurveyResult on non active answer click", async () => {
+    const { saveSurveyResultSpy, loadSurveyResultSpy } = makeSut();
+    await waitFor(() => {
+      const answerWrap = screen.queryAllByTestId("answer-wrap");
+      fireEvent.click(answerWrap[1]);
+      expect(screen.queryByTestId("loading")).toBeInTheDocument();
+      expect(saveSurveyResultSpy.params).toEqual({
+        answer: loadSurveyResultSpy.surveyResult.answers[1].answer,
+      });
     });
   });
 });
