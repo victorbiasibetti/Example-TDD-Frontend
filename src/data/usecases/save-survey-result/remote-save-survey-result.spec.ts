@@ -41,4 +41,13 @@ describe("RemoteSaveSurveyResult", () => {
     const promise = sut.save(mockSaveSurveyResultParams());
     await expect(promise).rejects.toThrow(new AccessDeniedError());
   });
+
+  test("Should throw UnexpectedError with HttpClient return 404", async () => {
+    const { httpClientSpy, sut } = makeSut();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
+    const promise = sut.save(mockSaveSurveyResultParams());
+    await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
 });
