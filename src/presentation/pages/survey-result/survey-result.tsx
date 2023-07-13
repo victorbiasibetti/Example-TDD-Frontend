@@ -7,16 +7,21 @@ import {
   Error,
 } from "@/presentation/components";
 import FlipMove from "react-flip-move";
-import { LoadSurveyResult } from "@/domain/usecases";
+import { LoadSurveyResult, SaveSurveyResult } from "@/domain/usecases";
 import { useErrorHandler } from "@/presentation/hooks";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SurveyResultAnswerModel } from "@/domain/models";
 
 type Props = {
   loadSurveyResult: LoadSurveyResult;
+  saveSurveyResult: SaveSurveyResult;
 };
 
-const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
+const SurveyResult: React.FC<Props> = ({
+  loadSurveyResult,
+  saveSurveyResult,
+}: Props) => {
   const handleError = useErrorHandler((error: Error) =>
     setState((old) => ({ ...old, surveyResult: null, error: error.message }))
   );
@@ -44,6 +49,20 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
       .catch(handleError);
   }, [state.reload]);
 
+  const onAnswer = (answer: string): void => {
+    setState((old) => ({ ...old, isLoading: true }));
+    saveSurveyResult.save({ answer }).then().catch();
+  };
+
+  const answerClick = (
+    event: React.MouseEvent,
+    answer: SurveyResultAnswerModel
+  ): void => {
+    if (!event.currentTarget.classList.contains(Styles.active)) {
+      onAnswer(answer.answer);
+    }
+  };
+
   return (
     <div className={Styles.surveyResultWrap}>
       <Header />
@@ -60,6 +79,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
             <FlipMove data-testid="answers" className={Styles.anwserList}>
               {state.surveyResult.answers.map((answer) => (
                 <li
+                  onClick={(event) => answerClick(event, answer)}
                   data-testid="answer-wrap"
                   key={answer.answer}
                   className={answer.isCurrentAccountAnswer ? Styles.active : ""}
