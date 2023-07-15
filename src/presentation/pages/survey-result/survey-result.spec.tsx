@@ -195,4 +195,18 @@ describe("SurveyResult Component", () => {
       expect(screen.getByTestId("error")).toHaveTextContent(error.message);
     });
   });
+
+  test("Should logout on AccessDeniedError", async () => {
+    const saveSurveyResultSpy = new SaveSurveyResultSpy();
+    jest
+      .spyOn(saveSurveyResultSpy, "save")
+      .mockRejectedValueOnce(new AccessDeniedError());
+    const { setCurrentAccountMock } = makeSut({ saveSurveyResultSpy });
+    await waitFor(() => {
+      const answerWrap = screen.queryAllByTestId("answer-wrap");
+      fireEvent.click(answerWrap[1]);
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined);
+      expect(mockUseNavigate).toHaveBeenCalledWith("/login", { replace: true });
+    });
+  });
 });
