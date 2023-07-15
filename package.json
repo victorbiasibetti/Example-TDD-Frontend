@@ -12,6 +12,8 @@
     "test:ci": "npm test -- --coverage",
     "test:coveralls": "npm run test:ci && coveralls < covarage/lcov.info",
     "test:cypress": "cypress open",
+    "test:cypress:run": "cypress run",
+    "test:cypress:ci": "start-server-and-test dev:base http-get://localhost:8080 test:cypress:run",
     "check": "npm-check -u -s"
   },
   "keywords": [],
@@ -28,6 +30,7 @@
     "@types/node": "^18.7.23",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@types/react-flip-move": "^2.9.12",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "clean-webpack-plugin": "^4.0.0",
@@ -55,6 +58,7 @@
     "mini-css-extract-plugin": "^2.6.1",
     "node-sass": "^7.0.3",
     "sass-loader": "^13.0.2",
+    "start-server-and-test": "^1.15.2",
     "style-loader": "^3.3.1",
     "ts-jest": "^29.0.2",
     "ts-loader": "^9.4.1",
@@ -68,6 +72,7 @@
     "axios": "^0.27.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-flip-move": "^3.0.5",
     "react-router-dom": "^6.4.1"
   }
 }

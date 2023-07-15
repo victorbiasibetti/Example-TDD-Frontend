@@ -1,47 +1,34 @@
 import {
-  HttpGetClient,
-  HttpGetParams,
-  HttpPostClient,
-  HttpPostParams,
   HttpResponse,
-  HttpStatusCode
-} from '../protocols/http'
-import faker from 'faker'
+  HttpStatusCode,
+  HttpRequest,
+  HttpClient,
+} from "../protocols/http";
+import faker from "faker";
 
-export const mockPostRequest = (): HttpPostParams<any> => ({
+export const mockHttpRequest = (): HttpRequest => ({
   url: faker.internet.url(),
-  body: faker.random.objectElement()
-})
+  method: faker.random.arrayElement(["get", "post", "delete", "put", "patch"]),
+  body: faker.random.objectElement(),
+  headers: faker.random.objectElement(),
+});
 
-export const mockGetRequest = (): HttpGetParams => ({
-  url: faker.internet.url(),
-  headers: faker.random.objectElement()
-})
-
-export class HttpPostClientSpy<BodyType, ResponseType = any> implements HttpPostClient<BodyType, ResponseType> {
-  url?: string
-  body?: BodyType
+export class HttpClientSpy<BodyType, ResponseType = any>
+  implements HttpClient<ResponseType>
+{
+  url?: string;
+  body?: BodyType;
+  method?: string;
+  headers?: any;
   response: HttpResponse<ResponseType> = {
-    statusCode: HttpStatusCode.ok
-  }
+    statusCode: HttpStatusCode.ok,
+  };
 
-  async post (params: HttpPostParams<BodyType>): Promise<HttpResponse<ResponseType>> {
-    this.url = params.url
-    this.body = params.body
-    return Promise.resolve(this.response)
-  }
-}
-
-export class HttpGetClientSpy<ResponseType = any> implements HttpGetClient<ResponseType> {
-  url: string
-  headers?: any
-  response: HttpResponse<ResponseType> = {
-    statusCode: HttpStatusCode.ok
-  }
-
-  async get (params: HttpGetParams): Promise<HttpResponse<ResponseType>> {
-    this.url = params.url
-    this.headers = params.headers
-    return this.response
+  async request(data: HttpRequest): Promise<HttpResponse<ResponseType>> {
+    this.url = data.url;
+    this.body = data.body;
+    this.method = data.method;
+    this.headers = data.headers;
+    return Promise.resolve(this.response);
   }
 }
