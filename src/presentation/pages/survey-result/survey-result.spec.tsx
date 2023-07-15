@@ -53,6 +53,10 @@ const makeSut = ({
   };
 };
 describe("SurveyResult Component", () => {
+  beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
   test("Should present correct inital state", async () => {
     makeSut();
     const surveyResult = screen.getByTestId("survey-result");
@@ -170,6 +174,25 @@ describe("SurveyResult Component", () => {
       expect(saveSurveyResultSpy.params).toEqual({
         answer: loadSurveyResultSpy.surveyResult.answers[1].answer,
       });
+    });
+  });
+
+  test("Should render error on UnexpectedError", async () => {
+    const saveSurveyResultSpy = new SaveSurveyResultSpy();
+    const error = new UnexpectedError();
+
+    makeSut({ saveSurveyResultSpy });
+    jest.spyOn(saveSurveyResultSpy, "save").mockRejectedValueOnce(error);
+
+    await waitFor(() => {
+      screen.getByTestId("survey-result");
+      const answerWrap = screen.queryAllByTestId("answer-wrap");
+      fireEvent.click(answerWrap[1]);
+    });
+    await waitFor(() => {
+      expect(screen.queryByTestId("question")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
+      expect(screen.getByTestId("error")).toHaveTextContent(error.message);
     });
   });
 });
