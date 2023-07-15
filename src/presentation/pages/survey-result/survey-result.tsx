@@ -56,7 +56,13 @@ const SurveyResult: React.FC<Props> = ({
 
   const onAnswer = (answer: string): void => {
     setState((old) => ({ ...old, isLoading: true }));
-    saveSurveyResult.save({ answer }).then().catch(handleError);
+    saveSurveyResult
+      .save({ answer })
+      .then((surveyResult) => {
+        // console.log({ ...surveyResult });
+        setState((old) => ({ ...old, surveyResult }));
+      })
+      .catch(handleError);
   };
 
   const answerClick = (
